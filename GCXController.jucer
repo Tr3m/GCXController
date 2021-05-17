@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="hjPxjG" name="GCXController" projectType="guiapp" jucerVersion="5.4.5">
+<JUCERPROJECT id="hjPxjG" name="GCXController" projectType="guiapp" displaySplashScreen="1"
+              jucerFormatVersion="1">
   <MAINGROUP id="jlKEIM" name="GCXController">
     <GROUP id="{D0DC7DCA-0E1C-EE53-912E-C21FCF6904D8}" name="Source">
       <FILE id="BQuKzO" name="myLookAndFeel.cpp" compile="1" resource="0"

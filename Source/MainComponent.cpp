@@ -13,10 +13,12 @@ MainComponent::MainComponent()
 {
     setSize(1200, 300);
 
+
     addAndMakeVisible(midiOutputListLabel);
     midiOutputListLabel.setText("MIDI Device:", juce::dontSendNotification);
     midiOutputListLabel.attachToComponent(&midiOutputList, true);
     midiOutputListLabel.setAlpha(0.6f);
+    midiOutputListLabel.setAlwaysOnTop(true);
 
     lnf1.setColour(PopupMenu::backgroundColourId, Colours::grey.withAlpha(0.6f));
     addAndMakeVisible(midiOutputList);
@@ -25,6 +27,7 @@ MainComponent::MainComponent()
     midiOutputList.setColour(ComboBox::backgroundColourId, Colours::grey.withAlpha(0.1f));
     midiOutputList.setColour(ComboBox::outlineColourId, Colours::grey.withAlpha(0.4f));
     midiOutputList.setColour(ComboBox::textColourId, Colours::green.withAlpha(1.0f));
+    midiOutputList.setAlwaysOnTop(true);
     auto midiInputs = juce::MidiOutput::getAvailableDevices();
 
     StringArray midiInputNames;
@@ -54,10 +57,19 @@ MainComponent::MainComponent()
         addAndMakeVisible(&loopButton[i]);
         loopButton[i].setColour(TextButton::ColourIds::buttonColourId, Colours::red);
         loopButton[i].setAlpha(0.3f);
-        loopButton[i].setLookAndFeel(&myLnf);
-        
-        
+        loopButton[i].setLookAndFeel(&myLnf);     
+        loopButton[i].setAlwaysOnTop(true);
+
     }
+
+    addAndMakeVisible(&viewToggle);
+    viewToggle.setButtonText("Label View");
+    viewToggle.setColour(TextButton::ColourIds::buttonColourId, Colours::darkgrey);
+    viewToggle.setColour(TextButton::ColourIds::textColourOffId, Colours::white.withAlpha(1.0f));
+    viewToggle.setAlpha(0.5f);
+    viewToggle.setLookAndFeel(&lnf2);
+    viewToggle.onClick = [this] {viewToggleClicked();};
+    viewToggle.setAlwaysOnTop(true);
 
     addAndMakeVisible(&bypassButton);
     bypassButton.setButtonText("Bypass");
@@ -65,6 +77,7 @@ MainComponent::MainComponent()
     bypassButton.setColour(TextButton::ColourIds::textColourOffId, Colours::white.withAlpha(1.0f));
     bypassButton.setAlpha(0.5f);
     bypassButton.setLookAndFeel(&lnf2);
+    bypassButton.setAlwaysOnTop(true);
     bypassButton.onClick = [this] {bypass();};
 
     loopButton[0].onClick = [this] {buttonClicked(0);};
@@ -75,16 +88,15 @@ MainComponent::MainComponent()
     loopButton[5].onClick = [this] {buttonClicked(5);};
     loopButton[6].onClick = [this] {buttonClicked(6);};
     loopButton[7].onClick = [this] {buttonClicked(7);};
-
-    loopButton[0].setLookAndFeel(&myLnf);
-   
+    
+      
 }
 
 MainComponent::~MainComponent()
 {
 }
 
-//TextButton& button, bool& loopState
+
 
 void MainComponent::buttonClicked(int loopNumber)
 {
@@ -116,12 +128,104 @@ void MainComponent::bypass()
     }
 }
 
+void MainComponent::viewToggleClicked()
+{
+    if (!isOnSimpleView)
+    {
+        setSize(800, 455);
+        isOnSimpleView = true;
+        midiOutputList.setBounds(180, 10, 220, 30);
+        bypassButton.setBounds(420, 10, 70, 30);
+        viewToggle.setButtonText("Back");
+
+        std::string line;
+        std::ifstream ifs("../../../../../loops.txt");
+       
+       
+        for (int i = 0; i < 8; i++) {
+            addAndMakeVisible(&loopButton[i]);
+            loopButton[i].setColour(TextButton::ColourIds::buttonColourId, Colours::red);
+            loopButton[i].setAlpha(0.3f);
+            loopButton[i].setLookAndFeel(&lnf1);
+            getline(ifs, line);
+            loopButton[i].setButtonText(line);
+            
+        }
+                        
+        for (int i = 0; i <= 3; ++i)
+        {
+            loopButton[i].setBounds(i * 200, 50, 200, 200);
+            bool& isLoopOn = loopState[i];
+
+            if (isLoopOn) 
+                loopButton[i].setAlpha(0.8f);                
+            else 
+                loopButton[i].setAlpha(0.3f);                            
+        }
+            
+
+        for (int i = 0; i <= 3; ++i)
+        {
+            loopButton[i + 4].setBounds(i * 200, 250, 200, 200);
+            bool& isLoopOn = loopState[i+4];
+
+            if (isLoopOn)
+                loopButton[i+4].setAlpha(0.8f);
+            else
+                loopButton[i+4].setAlpha(0.3f);
+        }
+
+        ifs.close();
+        repaint();
+    }
+    else
+    {
+        setSize(1200, 300);
+        isOnSimpleView = false;
+        viewToggle.setButtonText("Label View");
+
+        for (int i = 0; i < 8; i++) {
+            addAndMakeVisible(&loopButton[i]);
+            loopButton[i].setColour(TextButton::ColourIds::buttonColourId, Colours::red);
+            loopButton[i].setAlpha(0.3f);
+            loopButton[i].setLookAndFeel(&myLnf);
+            loopButton[i].setButtonText("");
+        }
+
+        for (int i = 0; i <= 3; ++i)
+        {
+            bool& isLoopOn = loopState[i];
+
+            if (isLoopOn)
+                loopButton[i].setAlpha(0.8f);
+            else
+                loopButton[i].setAlpha(0.3f);
+        }
+
+
+        for (int i = 0; i <= 3; ++i)
+        {
+            bool& isLoopOn = loopState[i + 4];
+
+            if (isLoopOn)
+                loopButton[i + 4].setAlpha(0.8f);
+            else
+                loopButton[i + 4].setAlpha(0.3f);
+        }
+
+        resized();
+        repaint();
+        
+    }
+}
+
 //==============================================================================
 void MainComponent::paint (Graphics& g)
 {
 
     g.fillAll(Colours::darkslateblue);
-    g.drawImageAt(unitImage, 0, 0);
+    if(!isOnSimpleView)
+        g.drawImageAt(unitImage, 0, 0);
     g.setFont (Font (16.0f));
     g.setColour (Colours::white);
 
@@ -140,6 +244,7 @@ void MainComponent::resized()
     loopButton[7].setBounds(891, 158, 17, 25);
 
     bypassButton.setBounds(950, 138, 70, 30);
+    viewToggle.setBounds(10, 10, 70, 30);
 
     midiOutputList.setBounds(270, 138, 220, 30);
     
