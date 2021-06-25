@@ -9,7 +9,6 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "myLookAndFeel.h"
 #include <fstream>
 
 //==============================================================================
@@ -48,7 +47,8 @@ private:
     bool loopState[8] = { false };
     int loopCC[8] = { 80, 81, 82, 83, 84, 85, 86, 87 };
 
-    
+    Image led_off = juce::ImageFileFormat::loadFrom(BinaryData::led_off_png, BinaryData::led_off_pngSize);
+    Image led_on = juce::ImageFileFormat::loadFrom(BinaryData::led_on_png, BinaryData::led_on_pngSize);
 
     AudioDeviceManager deviceManager;
     ComboBox midiOutputList;
@@ -58,7 +58,7 @@ private:
 
     LookAndFeel_V4 lnf1;
     LookAndFeel_V2 lnf2;
-    myLookAndFeel myLnf;
+
 
 
 

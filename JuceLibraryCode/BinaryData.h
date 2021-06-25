@@ -8,17 +8,20 @@
 
 namespace BinaryData
 {
+    extern const char*   led_on_png;
+    const int            led_on_pngSize = 2125;
+
+    extern const char*   led_off_png;
+    const int            led_off_pngSize = 1803;
+
     extern const char*   icon_png;
     const int            icon_pngSize = 38327;
 
     extern const char*   GCX_png;
     const int            GCX_pngSize = 62200;
 
-    extern const char*   Button_png;
-    const int            Button_pngSize = 1694;
-
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 3;
+    const int namedResourceListSize = 4;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

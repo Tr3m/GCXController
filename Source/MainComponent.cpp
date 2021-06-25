@@ -56,8 +56,8 @@ MainComponent::MainComponent()
     for (int i = 0; i < 8; i++) {
         addAndMakeVisible(&loopButton[i]);
         loopButton[i].setColour(TextButton::ColourIds::buttonColourId, Colours::red);
-        loopButton[i].setAlpha(0.3f);
-        loopButton[i].setLookAndFeel(&myLnf);     
+        loopButton[i].setAlpha(0.0f);
+        loopButton[i].setLookAndFeel(&lnf1);
         loopButton[i].setAlwaysOnTop(true);
 
     }
@@ -87,8 +87,7 @@ MainComponent::MainComponent()
     loopButton[4].onClick = [this] {buttonClicked(4);};
     loopButton[5].onClick = [this] {buttonClicked(5);};
     loopButton[6].onClick = [this] {buttonClicked(6);};
-    loopButton[7].onClick = [this] {buttonClicked(7);};
-    
+    loopButton[7].onClick = [this] {buttonClicked(7);};  
       
 }
 
@@ -104,15 +103,19 @@ void MainComponent::buttonClicked(int loopNumber)
     bool& isLoopOn = loopState[loopNumber];
 
     if (isLoopOn) {
-        button.setAlpha(0.3f);
+        if(isOnSimpleView)
+            button.setAlpha(0.3f);
         isLoopOn = false;
         midiOutput->sendMessageNow(MidiMessage::controllerEvent(16, loopNumber + 80, 0));
     }
     else {
-       button.setAlpha(0.8f);        
+        if (isOnSimpleView)
+            button.setAlpha(0.8f);        
         isLoopOn = true;
         midiOutput->sendMessageNow(MidiMessage::controllerEvent(16, loopNumber + 80, 127));
     }
+
+    repaint();
 }
 
 void MainComponent::bypass()
@@ -122,9 +125,9 @@ void MainComponent::bypass()
         TextButton& button = loopButton[i];
         bool& isLoopOn = loopState[i];
 
-        button.setAlpha(0.3f);
         isLoopOn = false;
         midiOutput->sendMessageNow(MidiMessage::controllerEvent(16, i+80, 0));
+        repaint();
     }
 }
 
@@ -132,14 +135,16 @@ void MainComponent::viewToggleClicked()
 {
     if (!isOnSimpleView)
     {
-        setSize(800, 455);
+        setSize(800, 485);
         isOnSimpleView = true;
         midiOutputList.setBounds(180, 10, 220, 30);
         bypassButton.setBounds(420, 10, 70, 30);
         viewToggle.setButtonText("Back");
 
         std::string line;
-        std::ifstream ifs("../../../../../loops.txt");
+
+        std::ifstream ifs("loops.txt");
+        //std::ifstream ifs("../../../../../loops.txt");
        
        
         for (int i = 0; i < 8; i++) {
@@ -188,7 +193,7 @@ void MainComponent::viewToggleClicked()
             addAndMakeVisible(&loopButton[i]);
             loopButton[i].setColour(TextButton::ColourIds::buttonColourId, Colours::red);
             loopButton[i].setAlpha(0.3f);
-            loopButton[i].setLookAndFeel(&myLnf);
+            loopButton[i].setLookAndFeel(&lnf1);
             loopButton[i].setButtonText("");
         }
 
@@ -196,22 +201,20 @@ void MainComponent::viewToggleClicked()
         {
             bool& isLoopOn = loopState[i];
 
-            if (isLoopOn)
-                loopButton[i].setAlpha(0.8f);
-            else
-                loopButton[i].setAlpha(0.3f);
+            loopButton[i].setAlpha(0.0f);
+            
         }
 
 
         for (int i = 0; i <= 3; ++i)
         {
             bool& isLoopOn = loopState[i + 4];
-
-            if (isLoopOn)
-                loopButton[i + 4].setAlpha(0.8f);
-            else
-                loopButton[i + 4].setAlpha(0.3f);
+            
+            loopButton[i + 4].setAlpha(0.0f);
+           
         }
+
+  
 
         resized();
         repaint();
@@ -222,26 +225,70 @@ void MainComponent::viewToggleClicked()
 //==============================================================================
 void MainComponent::paint (Graphics& g)
 {
-
     g.fillAll(Colours::darkslateblue);
+
+    int initialY = 146;
+    int initialX = 0;
+
+
+    
     if(!isOnSimpleView)
         g.drawImageAt(unitImage, 0, 0);
     g.setFont (Font (16.0f));
     g.setColour (Colours::white);
 
-    
+    if (!isOnSimpleView)
+    {
+        for (int loop = 0; loop <= 7; ++loop)
+        {
+            if (loopState[loop])
+            {
+                if (loop == 0)
+                {
+                    initialX = 675;
+                    g.drawImageAt(led_on, 673, initialY);
+                }
+                else
+                {
+                    if(loop < 3)
+                        g.drawImageAt(led_on, initialX - 1, initialY);
+                    else
+                        g.drawImageAt(led_on, initialX, initialY);
+                }
+            }
+            else
+            {
+                if (loop == 0)
+                {
+                    initialX = 675;
+                    g.drawImageAt(led_off, 673, initialY);
+                }
+                else
+                    if (loop < 3)
+                        g.drawImageAt(led_off, initialX - 1, initialY);
+                    else
+                        g.drawImageAt(led_off, initialX, initialY);
+            }
+
+            initialX = initialX + 30;
+        }        
+    }
+
+    g.setOpacity(0.7);
+    g.setFont(15.0);
+    g.drawText("Version 1.5", 0, getHeight() - 30, getWidth(), 20, juce::Justification::centred);
 }
 
 void MainComponent::resized()
 {
-    loopButton[0].setBounds(679, 158, 17, 25);
-    loopButton[1].setBounds(710, 158, 17, 25);
-    loopButton[2].setBounds(740, 158, 17, 25);
-    loopButton[3].setBounds(771, 158, 17, 25);
-    loopButton[4].setBounds(801, 158, 17, 25);
-    loopButton[5].setBounds(830, 158, 17, 25);
-    loopButton[6].setBounds(861, 158, 17, 25);
-    loopButton[7].setBounds(891, 158, 17, 25);
+    loopButton[0].setBounds(679, 158, 17, 17);
+    loopButton[1].setBounds(710, 158, 17, 17);
+    loopButton[2].setBounds(740, 158, 17, 17);
+    loopButton[3].setBounds(771, 158, 17, 17);
+    loopButton[4].setBounds(801, 158, 17, 17);
+    loopButton[5].setBounds(830, 158, 17, 17);
+    loopButton[6].setBounds(861, 158, 17, 17);
+    loopButton[7].setBounds(891, 158, 17, 17);
 
     bypassButton.setBounds(950, 138, 70, 30);
     viewToggle.setBounds(10, 10, 70, 30);

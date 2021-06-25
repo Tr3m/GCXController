@@ -2,10 +2,16 @@
 
 A simple desktop app to control the Voodoo Lab GCX Audio Switcher via MIDI.
 
-![githubScreenshot](https://user-images.githubusercontent.com/58518865/118499943-0bd8c180-b730-11eb-8593-8138b31c44de.png)
 
-![githubScreenshot](https://user-images.githubusercontent.com/58518865/118500022-1b580a80-b730-11eb-9c2f-681e725e834d.png)
-Developed with the JUCE C++ Framework.
+<p align="center">
+<img src="https://user-images.githubusercontent.com/58518865/123427465-55d58280-d5cd-11eb-898e-1f16ee0606e1.png"/>
+</p>
+
+<p align="center">
+<img src="https://user-images.githubusercontent.com/58518865/123427469-5706af80-d5cd-11eb-88f3-22f37bdd126b.png"/>
+</p>
+
+Developed using the JUCE C++ Framework.
 
 ### Usage
 This app requires a MIDI Interface.

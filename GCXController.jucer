@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="hjPxjG" name="GCXController" projectType="guiapp" displaySplashScreen="1"
-              jucerFormatVersion="1">
+              jucerFormatVersion="1" version="1.5">
   <MAINGROUP id="jlKEIM" name="GCXController">
     <GROUP id="{D0DC7DCA-0E1C-EE53-912E-C21FCF6904D8}" name="Source">
-      <FILE id="BQuKzO" name="myLookAndFeel.cpp" compile="1" resource="0"
-            file="Source/myLookAndFeel.cpp"/>
-      <FILE id="tXDiCZ" name="myLookAndFeel.h" compile="0" resource="0" file="Source/myLookAndFeel.h"/>
       <FILE id="b9xdgH" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="lw8QiT" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="FCu2YH" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
     <GROUP id="{E184D45D-D1D5-8270-71AD-550B5B7D8B1D}" name="Resources">
+      <FILE id="TZVyTa" name="led_on.png" compile="0" resource="1" file="Resources/led_on.png"/>
+      <FILE id="nnsfsi" name="led_off.png" compile="0" resource="1" file="Resources/led_off.png"/>
       <FILE id="ElHjuf" name="icon.png" compile="0" resource="1" file="Resources/icon.png"/>
       <FILE id="jvxOkw" name="GCX.png" compile="0" resource="1" file="Resources/GCX.png"/>
-      <FILE id="lEo8BC" name="Button.png" compile="0" resource="1" file="Resources/Button.png"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
